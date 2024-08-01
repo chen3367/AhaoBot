@@ -12,8 +12,6 @@ import os
 import platform
 import random
 import sys
-import nest_asyncio
-import PyPtt
 
 import aiosqlite
 import discord
