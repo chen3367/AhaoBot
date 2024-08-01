@@ -6,30 +6,10 @@ Description:
 Version: 6.2.0
 """
 
-import platform
-import random
-
-import aiohttp
 import discord
 from discord import app_commands
 from discord.ext import commands
 from discord.ext.commands import Context
-
-
-class FeedbackForm(discord.ui.Modal, title="Feeedback"):
-    feedback = discord.ui.TextInput(
-        label="What do you think about this bot?",
-        style=discord.TextStyle.long,
-        placeholder="Type your answer here...",
-        required=True,
-        max_length=256,
-    )
-
-    async def on_submit(self, interaction: discord.Interaction):
-        self.interaction = interaction
-        self.answer = str(self.feedback)
-        self.stop()
-
 
 class General(commands.Cog, name="general"):
     def __init__(self, bot) -> None:
