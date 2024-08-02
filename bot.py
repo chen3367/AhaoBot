@@ -131,6 +131,8 @@ class DiscordBot(commands.Bot):
             command_prefix=commands.when_mentioned_or(config["prefix"]),
             intents=intents,
             help_command=None,
+            owner_id=config['owner_id'],
+            activity = discord.Activity(type=discord.ActivityType.watching, name="/help for more info")
         )
         """
         This creates custom bot variables so that we can access these variables in cogs more easily.
@@ -144,7 +146,6 @@ class DiscordBot(commands.Bot):
         self.config = config
         self.result = None
         self.database = None
-        self.ptt_bot = None
 
     async def init_db(self) -> None:
         async with aiosqlite.connect(
@@ -172,21 +173,6 @@ class DiscordBot(commands.Bot):
                         f"Failed to load extension {extension}\n{exception}"
                     )
 
-    @tasks.loop(minutes=1.0)
-    async def status_task(self) -> None:
-        """
-        Setup the game status task of the bot.
-        """
-        statuses = ["with you!", "with Krypton!", "with humans!"]
-        await self.change_presence(activity=discord.Game(random.choice(statuses)))
-
-    @status_task.before_loop
-    async def before_status_task(self) -> None:
-        """
-        Before starting the status changing task, we make sure the bot is ready
-        """
-        await self.wait_until_ready()
-
     async def setup_hook(self) -> None:
         """
         This will just be executed when the bot starts the first time.
@@ -200,7 +186,6 @@ class DiscordBot(commands.Bot):
         self.logger.info("-------------------")
         await self.init_db()
         await self.load_cogs()
-        self.status_task.start()
         self.database = DatabaseManager(
             connection=await aiosqlite.connect(
                 f"{os.path.realpath(os.path.dirname(__file__))}/database/database.db"
