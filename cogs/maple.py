@@ -35,6 +35,7 @@ class Maple(commands.Cog, name="maple"):
         """
         if context.invoked_subcommand is None:
             embed = discord.Embed(
+                title="Error",
                 description="Please specify a subcommand.",
                 color=0xE02B2B,
             )
@@ -57,15 +58,20 @@ class Maple(commands.Cog, name="maple"):
         }
         await context.send(url_dict[job])
 
-    @maple.command(name="lvling", description="練功地圖推薦")
+    @maple.command(name="leveling", description="練功地圖推薦")
     @app_commands.describe(
         level="角色等級"
     )
-    async def lvling(self, context: Context, level: int) -> None:
+    async def leveling(self, context: Context, level: int) -> None:
         if level <= 0 or level > 300:
-            await context.send("請輸入角色等級(1~300)")
+            embed = discord.Embed(
+                title="Error",
+                description="請輸入角色等級",
+                color=0xE02B2B,
+            )
+            await context.send(embed=embed)
         else:
-            level_list = {
+            level_mapping = {
                 0: None, 
                 10: "[新手任務]",
                 20: "[北部森林]綠樹的樹藤 風獨眼獸",
@@ -92,14 +98,14 @@ class Maple(commands.Cog, name="maple"):
                 280: "[奧迪溫]被佔領的巷道2 安格洛機器人 B型/AUT260",
                 300: "[奧迪溫]大門深鎖的實驗室 3 失敗的實驗體/AUT300"
             }
-            levels = list(level_list.keys())
+            levels = list(level_mapping.keys())
             closest_level, i = find_closest_greater_or_equal(levels, level)
             embed = discord.Embed(
                 title="練功地圖推薦", description="參考: https://forum.gamer.com.tw/C.php?bsn=7650&snA=935239", color=0xBEBEFE
             )
-            embed.add_field(name=f"{levels[i-1]+1}-{closest_level}等", value=level_list[closest_level], inline=False)
+            embed.add_field(name=f"{levels[i-1]+1}-{closest_level}等", value=level_mapping[closest_level], inline=False)
             image_id = str(i).zfill(3)
-            image = discord.File(f"image/map/{image_id}.png", filename=f"{image_id}.png")
+            image = discord.File(f"image/map/leveling/{image_id}.png", filename=f"{image_id}.png")
             embed.set_image(url=f"attachment://{image_id}.png")
             await context.send(file=image, embed=embed)
 

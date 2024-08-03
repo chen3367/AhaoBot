@@ -132,7 +132,7 @@ class DiscordBot(commands.Bot):
             intents=intents,
             help_command=None,
             owner_id=config['owner_id'],
-            activity = discord.Activity(type=discord.ActivityType.watching, name="/help for more info")
+            activity = discord.Activity(type=discord.ActivityType.watching, name="/help | /maple")
         )
         """
         This creates custom bot variables so that we can access these variables in cogs more easily.
