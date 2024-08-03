@@ -105,7 +105,7 @@ class Maple(commands.Cog, name="maple"):
             )
             embed.add_field(name=f"{levels[i-1]+1}-{closest_level}等", value=level_mapping[closest_level], inline=False)
             image_id = str(i).zfill(3)
-            image = discord.File(f"image/map/leveling/{image_id}.png", filename=f"{image_id}.png")
+            image = discord.File(f"image/leveling/{image_id}.png", filename=f"{image_id}.png")
             embed.set_image(url=f"attachment://{image_id}.png")
             await context.send(file=image, embed=embed)
 
