@@ -10,12 +10,11 @@ import json
 import logging
 import os
 import platform
-import random
 import sys
 
 import aiosqlite
 import discord
-from discord.ext import commands, tasks
+from discord.ext import commands
 from discord.ext.commands import Context
 from dotenv import load_dotenv
 
