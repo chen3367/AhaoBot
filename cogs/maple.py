@@ -2,9 +2,7 @@ import discord
 from discord import app_commands
 from discord.ext import commands
 from discord.ext.commands import Context
-import asyncio
 from src.constant import level_mapping, job_url
-from src.maple import Mob
 
 def find_closest_greater_or_equal(nums, x):
     left, right = 0, len(nums) - 1
