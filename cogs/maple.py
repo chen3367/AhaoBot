@@ -88,7 +88,7 @@ class Maple(commands.Cog, name="maple"):
             )
         else:
             embed = discord.Embed(
-                title="搜尋結果", color=0xBEBEFE
+                title=mob[1], color=0xBEBEFE
             )
             result = []
             result.append(f"ID: {mob[0]}")
@@ -103,7 +103,7 @@ class Maple(commands.Cog, name="maple"):
             result.append(f"迴避率: {mob[11]}")
             result.append(f"經驗值: {mob[12]}")
             result.append(f"主動攻擊: {'否' if not mob[13] else '是'}")
-            embed.add_field(name=mob[1], value="\n".join(result), inline=False)
+            embed.add_field(name="", value="\n".join(result), inline=False)
             embed.set_thumbnail(url=f"https://maplestory.io/api/TWMS/256/mob/{mob[0]}/icon")
         await context.send(embed=embed)
 
