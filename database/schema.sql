@@ -6,3 +6,20 @@ CREATE TABLE IF NOT EXISTS `warns` (
   `reason` varchar(255) NOT NULL,
   `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
+
+CREATE TABLE IF NOT EXISTS `mob` (
+  `id` int(11) NOT NULL PRIMARY KEY,
+  `name` varchar(20) NOT NULL,
+  `mobType` varchar(2),
+  `level` int(11),
+  `isBoss` boolean,
+  `isBodyAttack` boolean,
+  `maxHP` int(11),
+  `speed` int(11),
+  `physicalDamage` int(11),
+  `magicDamage` int(11),
+  `accuracy` int(11),
+  `evasion` int(11),
+  `exp` int(11),
+  `isAutoAggro` boolean
+);

@@ -2,7 +2,9 @@ import discord
 from discord import app_commands
 from discord.ext import commands
 from discord.ext.commands import Context
-from constant import level_mapping, job_url
+import asyncio
+from src.constant import level_mapping, job_url
+from src.maple import Mob
 
 def find_closest_greater_or_equal(nums, x):
     left, right = 0, len(nums) - 1
@@ -75,6 +77,37 @@ class Maple(commands.Cog, name="maple"):
             image = discord.File(f"image/leveling/{closest_level}.png", filename=f"{closest_level}.png")
             embed.set_image(url=f"attachment://{closest_level}.png")
             await context.send(file=image, embed=embed)
+    
+    @maple.command(name="mob", description="取得怪物資訊")
+    @app_commands.describe(
+        name="怪物名稱"
+    )
+    async def mob(self, context: Context, name: str) -> None:
+        mob = await self.bot.database.select_one("mob", "*", name = name)
+        if not mob:
+            embed = discord.Embed(
+                title="查無搜尋結果", description="請輸入正確怪物名稱", color=0xE02B2B
+            )
+        else:
+            embed = discord.Embed(
+                title="搜尋結果", color=0xBEBEFE
+            )
+            result = []
+            result.append(f"ID: {mob[0]}")
+            result.append(f"等級: {mob[3]}")
+            result.append(f"Boss: {'否' if not mob[4] else '是'}")
+            result.append(f"碰撞傷害: {'否' if not mob[5] else '是'}")
+            result.append(f"HP: {mob[6]}")
+            result.append(f"速度: {mob[7]}")
+            result.append(f"物防: {mob[8]}")
+            result.append(f"魔防: {mob[9]}")
+            result.append(f"命中率: {mob[10]}")
+            result.append(f"迴避率: {mob[11]}")
+            result.append(f"經驗值: {mob[12]}")
+            result.append(f"主動攻擊: {'否' if not mob[13] else '是'}")
+            embed.add_field(name=mob[1], value="\n".join(result), inline=False)
+            embed.set_thumbnail(url=f"https://maplestory.io/api/TWMS/256/mob/{mob[0]}/icon")
+        await context.send(embed=embed)
 
 async def setup(bot) -> None:
     await bot.add_cog(Maple(bot))
