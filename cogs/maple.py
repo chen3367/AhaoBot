@@ -88,7 +88,7 @@ class Maple(commands.Cog, name="maple"):
             )
         else:
             embed = discord.Embed(
-                title=mob[1], color=0xBEBEFE
+                title=mob[1], description=f"[更多詳細資訊](https://maplestory.wiki/TWMS/256/mob?page=1&searchFor={name})" ,color=0xBEBEFE
             )
             result = []
             result.append(f"ID: {mob[0]}")
