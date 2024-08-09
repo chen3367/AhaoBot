@@ -81,7 +81,7 @@ class Maple(commands.Cog, name="maple"):
         name="怪物名稱"
     )
     async def mob(self, context: Context, name: str) -> None:
-        mob = await self.bot.database.select_one("mob", "*", name = name)
+        mob = await self.bot.database.select_one("maple_mob", "*", name = name)
         if not mob:
             embed = discord.Embed(
                 title="查無搜尋結果", description="請輸入正確怪物名稱", color=0xE02B2B
