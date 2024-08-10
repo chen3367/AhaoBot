@@ -5,9 +5,10 @@ from discord.ext.commands import Context
 from src.constant import level_mapping, job_url
 
 class Mob(discord.ui.View):
-    def __init__(self, mob, index = 0) -> None:
+    def __init__(self, mob, bot, index = 0) -> None:
         super().__init__()
         self.mob = mob
+        self.bot = bot
         self.index = index
 
     @discord.ui.button(label="<", style=discord.ButtonStyle.blurple)
@@ -23,17 +24,22 @@ class Mob(discord.ui.View):
         await self.callback(interaction)
 
     async def callback(self, interaction: discord.Interaction):
-        id = self.mob[self.index][0]
+        mob_id = self.mob[self.index][0]
+        maps = await self.bot.database.select("maple_mob_map a inner join maple_map b on a.map_id = b.id", "b.*", mob_id = mob_id)
         embed = discord.Embed(
-            title=f"{self.mob[self.index][1]} {self.index+1}/{len(self.mob)}", description=f"[更多詳細資訊](https://maplestory.wiki/TWMS/256/mob/{id})", color=0xBEBEFE
+            title=f"{self.mob[self.index][1]} {self.index+1}/{len(self.mob)}", description=f"[更多詳細資訊](https://maplestory.wiki/TWMS/256/mob/{mob_id})", color=0xBEBEFE
         )
-        embed.add_field(name="", value=formatted_mob_info(self.mob[self.index]), inline=False)
-        embed.set_thumbnail(url=f"https://maplestory.io/api/TWMS/256/mob/{self.mob[self.index][0]}/icon")
+        embed.add_field(name="", value=formatted_mob_info(self.mob[self.index], maps), inline=False)
+        embed.set_thumbnail(url=f"https://maplestory.io/api/TWMS/256/mob/{mob_id}/icon")
         await interaction.response.edit_message(embed=embed, view=self, content=None)
 
 
-def formatted_mob_info(mob):
+def formatted_mob_info(mob, maps):
     result = []
+    if len(maps) > 15:
+        formatted_maps = "\n".join(f"[{_map[2]}: {_map[1]}](https://maplestory.wiki/TWMS/256/map/{_map[0]})" for _map in maps[:15]) + "\n...更多請見詳細資訊"
+    else:
+        formatted_maps = "\n".join(f"[{_map[2]}: {_map[1]}](https://maplestory.wiki/TWMS/256/map/{_map[0]})" for _map in maps)
     result.append(f"ID: {mob[0]}")
     result.append(f"等級: {mob[3]}")
     result.append(f"Boss: {'否' if not mob[4] else '是'}")
@@ -45,6 +51,7 @@ def formatted_mob_info(mob):
     result.append(f"命中率: {mob[10]}")
     result.append(f"迴避率: {mob[11]}")
     result.append(f"經驗值: {mob[12]}")
+    result.append(f"出現地圖:\n{formatted_maps}")
     return "\n".join(result)
 
 def find_closest_greater_or_equal(nums, x):
@@ -131,13 +138,14 @@ class Maple(commands.Cog, name="maple"):
             )
             await context.send(embed=embed)
         else:
-            buttons = Mob(mob)
-            id = mob[0][0]
+            buttons = Mob(mob, self.bot)
+            mob_id = mob[0][0]
+            maps = await self.bot.database.select("maple_mob_map a inner join maple_map b on a.map_id = b.id", "b.*", mob_id = mob_id)
             embed = discord.Embed(
-                title=f"{name} 1/{len(mob)}", description=f"[更多詳細資訊](https://maplestory.wiki/TWMS/256/mob/{id})", color=0xBEBEFE
+                title=f"{name} 1/{len(mob)}", description=f"[更多詳細資訊](https://maplestory.wiki/TWMS/256/mob/{mob_id})", color=0xBEBEFE
             )
-            embed.add_field(name="", value=formatted_mob_info(mob[buttons.index]), inline=False)
-            embed.set_thumbnail(url=f"https://maplestory.io/api/TWMS/256/mob/{id}/icon")
+            embed.add_field(name="", value=formatted_mob_info(mob[buttons.index], maps), inline=False)
+            embed.set_thumbnail(url=f"https://maplestory.io/api/TWMS/256/mob/{mob_id}/icon")
             await context.send(embed=embed, view=buttons)
 
 async def setup(bot) -> None:

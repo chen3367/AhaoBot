@@ -23,3 +23,14 @@ CREATE TABLE IF NOT EXISTS `maple_mob` (
   `exp` int(11),
   `isAutoAggro` boolean
 );
+
+CREATE TABLE IF NOT EXISTS `maple_mob_map` (
+  `mob_id` int(11) NOT NULL,
+  `map_id` varchar(20) NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS `maple_map` (
+  `id` int(11) NOT NULL PRIMARY KEY,
+  `name` varchar(20) NOT NULL,
+  `streetName` varchar(20)
+);
