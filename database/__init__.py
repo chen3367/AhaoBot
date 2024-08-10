@@ -37,24 +37,24 @@ class DatabaseManager:
 
         return result
     
-    async def select_one(self, table: str, *cols, **kwargs) -> list:
+    async def select_one(self, cols: str, table: str, **kwargs) -> list:
         if not kwargs:
-            rows = f"SELECT {(', ').join(cols)} FROM {table}"
+            rows = f"SELECT {cols} FROM {table}"
         else:
             rows = await self.connection.execute(
-                f"SELECT {(', ').join(cols)} FROM {table} WHERE {(' AND ').join(map(lambda x: f'{x}=?', kwargs.keys()))}",
+                f"SELECT {cols} FROM {table} WHERE {(' AND ').join(map(lambda x: f'{x}=?', kwargs.keys()))}",
                 tuple(kwargs.values())
             )
         async with rows as cursor:
             result = await cursor.fetchone()
             return result
     
-    async def select(self, table: str, *cols, **kwargs) -> list:
+    async def select(self, cols: str, table: str, **kwargs) -> list:
         if not kwargs:
-            rows = f"SELECT {(', ').join(cols)} FROM {table}"
+            rows = f"SELECT {cols} FROM {table}"
         else:
             rows = await self.connection.execute(
-                f"SELECT {(', ').join(cols)} FROM {table} WHERE {(' AND ').join(map(lambda x: f'{x}=?', kwargs.keys()))}",
+                f"SELECT {cols} FROM {table} WHERE {(' AND ').join(map(lambda x: f'{x}=?', kwargs.keys()))}",
                 tuple(kwargs.values())
             )
         async with rows as cursor:

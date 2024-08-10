@@ -403,7 +403,7 @@ class Owner(commands.Cog, name="owner"):
         )
 
         max_id_row = await self.bot.database.select_one(
-            "warns", "max(id)", user_id = user.id, server_id = context.guild.id
+            "max(id)", "warns", user_id = user.id, server_id = context.guild.id
         )
 
         warn_id = 1 if not max_id_row[0] else max_id_row[0] + 1
@@ -415,7 +415,7 @@ class Owner(commands.Cog, name="owner"):
         context.subcommand_passed = f"Insert {result} successfully."
 
         total = (await self.bot.database.select_one(
-            "warns", "COUNT(*)", user_id = user.id, server_id = context.guild.id
+            "COUNT(*)", "warns", user_id = user.id, server_id = context.guild.id
         ))[0]
         embed = discord.Embed(
             description=f"**{member}** was warned by **{context.author}**!\nTotal warns for this user: {total}",
@@ -461,7 +461,7 @@ class Owner(commands.Cog, name="owner"):
 
         context.subcommand_passed = f"Delete {result} successfully." if result else f"ID: {warn_id} not found."
         total = (await self.bot.database.select_one(
-            "warns", "COUNT(*)", user_id = user.id, server_id = context.guild.id
+            "COUNT(*)", "warns", user_id = user.id, server_id = context.guild.id
         ))[0]
         embed = discord.Embed(
             description=f"I've removed the warning **#{warn_id}** from **{member}**!\nTotal warns for this user: {total}",
@@ -483,7 +483,7 @@ class Owner(commands.Cog, name="owner"):
         :param user: The user you want to get the warnings of.
         """
         warnings_list = await self.bot.database.select(
-            "warns", "user_id", "server_id", "moderator_id", "reason", "strftime('%s', created_at)", "id", user_id = user.id, server_id = context.guild.id
+            "user_id, server_id, moderator_id, reason, strftime('%s', created_at)", "id", "warns", user_id = user.id, server_id = context.guild.id
         )
         embed = discord.Embed(title=f"Warnings of {user}", color=0xBEBEFE)
         description = ""

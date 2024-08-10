@@ -25,7 +25,7 @@ class Mob(discord.ui.View):
 
     async def callback(self, interaction: discord.Interaction):
         mob_id = self.mob[self.index][0]
-        maps = await self.bot.database.select("maple_mob_map a inner join maple_map b on a.map_id = b.id", "b.*", mob_id = mob_id)
+        maps = await self.bot.database.select("b.*", "maple_mob_map a inner join maple_map b on a.map_id = b.id", mob_id = mob_id)
         embed = discord.Embed(
             title=f"{self.mob[self.index][1]} {self.index+1}/{len(self.mob)}", description=f"[更多詳細資訊](https://maplestory.wiki/TWMS/256/mob/{mob_id})", color=0xBEBEFE
         )
@@ -131,7 +131,7 @@ class Maple(commands.Cog, name="maple"):
         name="怪物名稱"
     )
     async def mob(self, context: Context, name: str) -> None:
-        mob = await self.bot.database.select("maple_mob", "*", name = name)
+        mob = await self.bot.database.select("*", "maple_mob", name = name)
         if not mob:
             embed = discord.Embed(
                 title="查無搜尋結果", description="請輸入正確怪物名稱", color=0xE02B2B
@@ -140,7 +140,7 @@ class Maple(commands.Cog, name="maple"):
         else:
             buttons = Mob(mob, self.bot)
             mob_id = mob[0][0]
-            maps = await self.bot.database.select("maple_mob_map a inner join maple_map b on a.map_id = b.id", "b.*", mob_id = mob_id)
+            maps = await self.bot.database.select("b.*", "maple_mob_map a inner join maple_map b on a.map_id = b.id", mob_id = mob_id)
             embed = discord.Embed(
                 title=f"{name} 1/{len(mob)}", description=f"[更多詳細資訊](https://maplestory.wiki/TWMS/256/mob/{mob_id})", color=0xBEBEFE
             )
