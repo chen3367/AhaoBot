@@ -7,7 +7,7 @@ CREATE TABLE IF NOT EXISTS `warns` (
   `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
 
-CREATE TABLE IF NOT EXISTS `mob` (
+CREATE TABLE IF NOT EXISTS `maple_mob` (
   `id` int(11) NOT NULL PRIMARY KEY,
   `name` varchar(20) NOT NULL,
   `mobType` varchar(2),
