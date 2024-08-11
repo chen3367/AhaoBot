@@ -33,13 +33,9 @@ class Mob(discord.ui.View):
         embed.set_thumbnail(url=f"https://maplestory.io/api/TWMS/256/mob/{mob_id}/icon")
         await interaction.response.edit_message(embed=embed, view=self, content=None)
 
-
 def formatted_mob_info(mob, maps):
     result = []
-    if len(maps) > 15:
-        formatted_maps = "\n".join(f"[{_map[2]}: {_map[1]}](https://maplestory.wiki/TWMS/256/map/{_map[0]})" for _map in maps[:15]) + "\n...更多請見詳細資訊"
-    else:
-        formatted_maps = "\n".join(f"[{_map[2]}: {_map[1]}](https://maplestory.wiki/TWMS/256/map/{_map[0]})" for _map in maps)
+    formatted_maps = "\n".join(f"[{_map[2]}: {_map[1]}](https://maplestory.wiki/TWMS/256/map/{_map[0]})" for _map in maps)
     result.append(f"ID: {mob[0]}")
     result.append(f"等級: {mob[3]}")
     result.append(f"Boss: {'否' if not mob[4] else '是'}")
@@ -52,7 +48,14 @@ def formatted_mob_info(mob, maps):
     result.append(f"迴避率: {mob[11]}")
     result.append(f"經驗值: {mob[12]}")
     result.append(f"出現地圖:\n{formatted_maps}")
-    return "\n".join(result)
+    if len("\n".join(result)) <= 1024:
+        return "\n".join(result)
+    else:
+        while len("\n".join(result)) > 1024 - 51 - len(str(mob[0])):
+            last_occurence = result[-1].rindex("\n")
+            result[-1] = result[-1][:last_occurence]
+        result.append(f"...[更多地圖](https://maplestory.wiki/TWMS/256/mob/{mob[0]})")
+        return "\n".join(result)
 
 def find_closest_greater_or_equal(nums, x):
     left, right = 0, len(nums) - 1
