@@ -1,5 +1,13 @@
 from discord import app_commands
 
+tips = {
+    "【攻略】製作書掉落資訊": "https://forum.gamer.com.tw/C.php?bsn=7650&snA=1013981",
+    "【攻略】個人(打王)增益效果統整": "https://forum.gamer.com.tw/C.php?bsn=7650&snA=1024032",
+    "【攻略】伊甸的糧食倉庫 經驗表": "https://forum.gamer.com.tw/C.php?bsn=7650&snA=1027857",
+    "【攻略】裝備效益計算機": "https://forum.gamer.com.tw/C.php?bsn=7650&snA=1029318",
+    "【工具】BOSS篩選器": "https://forum.gamer.com.tw/C.php?bsn=7650&snA=1025763"
+}
+
 jobtips_choice1 = [
     app_commands.Choice(name="英雄", value="https://forum.gamer.com.tw/C.php?bsn=7650&snA=1029191"),
     app_commands.Choice(name="聖騎士", value="https://forum.gamer.com.tw/C.php?bsn=7650&snA=928713"),

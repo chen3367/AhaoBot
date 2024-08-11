@@ -2,7 +2,7 @@ import discord
 from discord import app_commands
 from discord.ext import commands
 from discord.ext.commands import Context
-from src.constant import jobtips_choice1, jobtips_choice2, level_mapping
+from src.maplevar import tips, jobtips_choice1, jobtips_choice2, level_mapping
 
 class Mob(discord.ui.View):
     def __init__(self, mob, bot, index = 0) -> None:
@@ -92,6 +92,15 @@ class Maple(commands.Cog, name="maple"):
                 color=0xE02B2B,
             )
             await context.send(embed=embed)
+
+    @maple.command(name="tips", description="實用攻略")
+    async def tips(self, context: Context) -> None:
+        embed = discord.Embed(
+            title="實用攻略", description="來源: [巴哈姆特](https://forum.gamer.com.tw/B.php?bsn=7650)", color=0xBEBEFE
+        )
+        for title, url in tips.items():
+            embed.add_field(name=title, value=url, inline=False)
+        await context.send(embed=embed)
 
     @maple.command(name="jobtips1", description="職業攻略1")
     @app_commands.describe(
