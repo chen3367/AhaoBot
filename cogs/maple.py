@@ -2,7 +2,7 @@ import discord
 from discord import app_commands
 from discord.ext import commands
 from discord.ext.commands import Context
-from src.constant import level_mapping, job_url
+from src.constant import jobtips_choice1, jobtips_choice2, level_mapping
 
 class Mob(discord.ui.View):
     def __init__(self, mob, bot, index = 0) -> None:
@@ -93,17 +93,21 @@ class Maple(commands.Cog, name="maple"):
             )
             await context.send(embed=embed)
 
-    @maple.command(name="jobtips", description="職業攻略")
+    @maple.command(name="jobtips1", description="職業攻略1")
     @app_commands.describe(
         job="職業名稱"
     )
-    @app_commands.choices(job=[
-         app_commands.Choice(name="夜使者", value="NightLord"),
-         app_commands.Choice(name="暗影神偷", value="Shadower"),
-         app_commands.Choice(name="影武者", value="DualBlade")
-    ])
-    async def jobtips(self, context: Context, job: str) -> None:
-        await context.send(job_url[job])
+    @app_commands.choices(job=jobtips_choice1)
+    async def jobtips1(self, context: Context, job: str) -> None:
+        await context.send(job)
+
+    @maple.command(name="jobtips2", description="職業攻略2")
+    @app_commands.describe(
+        job="職業名稱"
+    )
+    @app_commands.choices(job=jobtips_choice2)
+    async def jobtips2(self, context: Context, job: str) -> None:
+        await context.send(job)
 
     @maple.command(name="leveling", description="練功地圖推薦")
     @app_commands.describe(
