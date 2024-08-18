@@ -1,8 +1,9 @@
 import discord
+import typing
 from discord import app_commands
 from discord.ext import commands
 from discord.ext.commands import Context
-from src.maplevar import tips, jobtips_choice1, jobtips_choice2, level_mapping
+from src.maplevar import tips, jobtips, level_mapping, mob_list
 
 class Mob(discord.ui.View):
     def __init__(self, mob, bot, index = 0) -> None:
@@ -32,6 +33,20 @@ class Mob(discord.ui.View):
         embed.add_field(name="", value=formatted_mob_info(self.mob[self.index], maps), inline=False)
         embed.set_thumbnail(url=f"https://maplestory.io/api/TWMS/256/mob/{mob_id}/icon")
         await interaction.response.edit_message(embed=embed, view=self, content=None)
+
+def autocompletion(items: dict):
+    async def getChoice(
+            interaction: discord.Interaction,
+            current: str
+    ) -> typing.List[app_commands.Choice[str]]:
+        data = []
+        for name, value in items.items():
+            if current in name:
+                data.append(app_commands.Choice(name=name, value=value))
+            if len(data) >= 25:
+                break
+        return data
+    return getChoice
 
 def formatted_mob_info(mob, maps):
     result = []
@@ -101,21 +116,13 @@ class Maple(commands.Cog, name="maple"):
         for title, url in tips.items():
             embed.add_field(name=title, value=url, inline=False)
         await context.send(embed=embed)
-
-    @maple.command(name="jobtips1", description="職業攻略1")
+        
+    @maple.command(name="jobtips", description="職業攻略")
     @app_commands.describe(
         job="職業名稱"
     )
-    @app_commands.choices(job=jobtips_choice1)
-    async def jobtips1(self, context: Context, job: str) -> None:
-        await context.send(job)
-
-    @maple.command(name="jobtips2", description="職業攻略2")
-    @app_commands.describe(
-        job="職業名稱"
-    )
-    @app_commands.choices(job=jobtips_choice2)
-    async def jobtips2(self, context: Context, job: str) -> None:
+    @app_commands.autocomplete(job=autocompletion(jobtips))
+    async def jobtips(self, context: Context, job: str) -> None:
         await context.send(job)
 
     @maple.command(name="leveling", description="練功地圖推薦")
@@ -143,6 +150,7 @@ class Maple(commands.Cog, name="maple"):
             await context.send(file=image, embed=embed)
     
     @maple.command(name="mob", description="取得怪物資訊")
+    @app_commands.autocomplete(name=autocompletion(mob_list))
     @app_commands.describe(
         name="怪物名稱"
     )

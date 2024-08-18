@@ -1,4 +1,13 @@
-from discord import app_commands
+import sqlite3
+
+def getMobList():
+    conn = sqlite3.connect("database/database.db")
+    result = conn.execute("SELECT DISTINCT(name) FROM maple_mob ORDER BY id")
+    mob_list = {mob[0]:mob[0] for mob in result.fetchall()}
+    conn.close()
+    return mob_list
+
+mob_list = getMobList()
 
 tips = {
     "【攻略】製作書掉落資訊": "https://forum.gamer.com.tw/C.php?bsn=7650&snA=1013981",
@@ -8,61 +17,58 @@ tips = {
     "【工具】BOSS篩選器": "https://forum.gamer.com.tw/C.php?bsn=7650&snA=1025763"
 }
 
-jobtips_choice1 = [
-    app_commands.Choice(name="英雄", value="https://forum.gamer.com.tw/C.php?bsn=7650&snA=1029191"),
-    app_commands.Choice(name="聖騎士", value="https://forum.gamer.com.tw/C.php?bsn=7650&snA=928713"),
-    app_commands.Choice(name="黑騎士", value="https://forum.gamer.com.tw/C.php?bsn=7650&snA=999902"),
-    app_commands.Choice(name="主教", value="https://forum.gamer.com.tw/C.php?bsn=7650&snA=1021664"),
-    app_commands.Choice(name="冰雷大魔導士", value="https://forum.gamer.com.tw/C.php?bsn=7650&snA=946674"),
-    app_commands.Choice(name="火毒大魔導士", value="https://forum.gamer.com.tw/C.php?bsn=7650&snA=1021709"),
-    app_commands.Choice(name="箭神", value="https://forum.gamer.com.tw/C.php?bsn=7650&snA=1002462"),
-    app_commands.Choice(name="神射手", value="https://forum.gamer.com.tw/C.php?bsn=7650&snA=1014283"),
-    app_commands.Choice(name="開拓者", value="https://forum.gamer.com.tw/C.php?bsn=7650&snA=1001808"),
-    app_commands.Choice(name="夜使者", value="https://forum.gamer.com.tw/C.php?bsn=7650&snA=1023760"),
-    app_commands.Choice(name="暗影神偷", value="https://forum.gamer.com.tw/C.php?bsn=7650&snA=1028659"),
-    app_commands.Choice(name="影武者", value="https://forum.gamer.com.tw/C.php?bsn=7650&snA=999580"),
-    app_commands.Choice(name="槍神", value="https://forum.gamer.com.tw/C.php?bsn=7650&snA=1022424"),
-    app_commands.Choice(name="拳霸", value="https://forum.gamer.com.tw/C.php?bsn=7650&snA=1019146"),
-    app_commands.Choice(name="重砲指揮官", value="https://forum.gamer.com.tw/C.php?bsn=7650&snA=1029227"),
-    app_commands.Choice(name="聖魂劍士", value="https://forum.gamer.com.tw/C.php?bsn=7650&snA=1023953"),
-    app_commands.Choice(name="烈焰巫師", value="https://forum.gamer.com.tw/C.php?bsn=7650&snA=960392"),
-    app_commands.Choice(name="破風使者", value="https://forum.gamer.com.tw/C.php?bsn=7650&snA=1016324"),
-    app_commands.Choice(name="暗夜行者", value="https://forum.gamer.com.tw/C.php?bsn=7650&snA=974208"),
-    app_commands.Choice(name="閃雷悍將", value="https://forum.gamer.com.tw/C.php?bsn=7650&snA=1020164"),
-    app_commands.Choice(name="米哈逸", value="https://forum.gamer.com.tw/C.php?bsn=7650&snA=1010720"),
-    app_commands.Choice(name="狂狼勇士", value="https://forum.gamer.com.tw/C.php?bsn=7650&snA=1027906"),
-    app_commands.Choice(name="龍魔導士", value="https://forum.gamer.com.tw/C.php?bsn=7650&snA=941768"),
-    app_commands.Choice(name="夜光", value="https://forum.gamer.com.tw/C.php?bsn=7650&snA=1026291"),
-    app_commands.Choice(name="精靈遊俠", value="https://forum.gamer.com.tw/C.php?bsn=7650&snA=919629")
-]
-
-jobtips_choice2 = [
-    app_commands.Choice(name="幻影俠盜", value="https://forum.gamer.com.tw/C.php?bsn=7650&snA=891539"),
-    app_commands.Choice(name="隱月", value="https://forum.gamer.com.tw/C.php?bsn=7650&snA=1020845"),
-    app_commands.Choice(name="爆拳槍神", value="https://forum.gamer.com.tw/C.php?bsn=7650&snA=974038"),
-    app_commands.Choice(name="煉獄巫師", value="https://forum.gamer.com.tw/C.php?bsn=7650&snA=1021000"),
-    app_commands.Choice(name="狂豹獵人", value="https://forum.gamer.com.tw/C.php?bsn=7650&snA=894749"),
-    app_commands.Choice(name="機甲戰神", value="https://forum.gamer.com.tw/C.php?bsn=7650&snA=976654"),
-    app_commands.Choice(name="惡魔殺手", value="https://forum.gamer.com.tw/Co.php?bsn=7650&sn=6152106"),
-    app_commands.Choice(name="惡魔復仇者", value="https://forum.gamer.com.tw/C.php?bsn=7650&snA=1015079"),
-    app_commands.Choice(name="傑諾", value="https://forum.gamer.com.tw/C.php?bsn=7650&snA=959673"),
-    app_commands.Choice(name="凱撒", value="https://forum.gamer.com.tw/C.php?bsn=7650&snA=1015441"),
-    app_commands.Choice(name="凱殷", value="https://forum.gamer.com.tw/C.php?bsn=7650&snA=1024022"),
-    app_commands.Choice(name="卡蒂娜", value="https://forum.gamer.com.tw/C.php?bsn=7650&snA=1011427"),
-    app_commands.Choice(name="天使破壞者", value="https://forum.gamer.com.tw/C.php?bsn=7650&snA=1002369"),
-    app_commands.Choice(name="阿戴爾", value="https://forum.gamer.com.tw/C.php?bsn=7650&snA=1016892"),
-    app_commands.Choice(name="伊利恩", value="https://forum.gamer.com.tw/C.php?bsn=7650&snA=1027011"),
-    app_commands.Choice(name="卡莉", value="https://forum.gamer.com.tw/C.php?bsn=7650&snA=1025791"),
-    app_commands.Choice(name="亞克", value="https://forum.gamer.com.tw/C.php?bsn=7650&snA=992523"),
-    app_commands.Choice(name="菈菈", value="https://forum.gamer.com.tw/C.php?bsn=7650&snA=1019349"),
-    app_commands.Choice(name="虎影", value="https://forum.gamer.com.tw/C.php?bsn=7650&snA=1020893"),
-    app_commands.Choice(name="凱內西斯", value="https://forum.gamer.com.tw/C.php?bsn=7650&snA=1006030"),
-    app_commands.Choice(name="神之子", value="https://forum.gamer.com.tw/C.php?bsn=7650&snA=1014516"),
-    app_commands.Choice(name="劍豪", value="https://forum.gamer.com.tw/C.php?bsn=7650&snA=1015610"),
-    app_commands.Choice(name="陰陽師", value="https://forum.gamer.com.tw/C.php?bsn=7650&snA=895604"),
-    app_commands.Choice(name="琳恩", value="https://forum.gamer.com.tw/C.php?bsn=7650&snA=1028484"),
-    app_commands.Choice(name="墨玄", value="https://forum.gamer.com.tw/C.php?bsn=7650&snA=1012847")
-]
+jobtips = {
+    "英雄": "https://forum.gamer.com.tw/C.php?bsn=7650&snA=1029191",
+    "聖騎士": "https://forum.gamer.com.tw/C.php?bsn=7650&snA=928713",
+    "黑騎士": "https://forum.gamer.com.tw/C.php?bsn=7650&snA=999902",
+    "主教": "https://forum.gamer.com.tw/C.php?bsn=7650&snA=1021664",
+    "冰雷大魔導士": "https://forum.gamer.com.tw/C.php?bsn=7650&snA=946674",
+    "火毒大魔導士": "https://forum.gamer.com.tw/C.php?bsn=7650&snA=1021709",
+    "箭神": "https://forum.gamer.com.tw/C.php?bsn=7650&snA=1002462",
+    "神射手": "https://forum.gamer.com.tw/C.php?bsn=7650&snA=1014283",
+    "開拓者": "https://forum.gamer.com.tw/C.php?bsn=7650&snA=1001808",
+    "夜使者": "https://forum.gamer.com.tw/C.php?bsn=7650&snA=1023760",
+    "暗影神偷": "https://forum.gamer.com.tw/C.php?bsn=7650&snA=1028659",
+    "影武者": "https://forum.gamer.com.tw/C.php?bsn=7650&snA=999580",
+    "槍神": "https://forum.gamer.com.tw/C.php?bsn=7650&snA=1022424",
+    "拳霸": "https://forum.gamer.com.tw/C.php?bsn=7650&snA=1019146",
+    "重砲指揮官": "https://forum.gamer.com.tw/C.php?bsn=7650&snA=1029227",
+    "聖魂劍士": "https://forum.gamer.com.tw/C.php?bsn=7650&snA=1023953",
+    "烈焰巫師": "https://forum.gamer.com.tw/C.php?bsn=7650&snA=960392",
+    "破風使者": "https://forum.gamer.com.tw/C.php?bsn=7650&snA=1016324",
+    "暗夜行者": "https://forum.gamer.com.tw/C.php?bsn=7650&snA=974208",
+    "閃雷悍將": "https://forum.gamer.com.tw/C.php?bsn=7650&snA=1020164",
+    "米哈逸": "https://forum.gamer.com.tw/C.php?bsn=7650&snA=1010720",
+    "狂狼勇士": "https://forum.gamer.com.tw/C.php?bsn=7650&snA=1027906",
+    "龍魔導士": "https://forum.gamer.com.tw/C.php?bsn=7650&snA=941768",
+    "夜光": "https://forum.gamer.com.tw/C.php?bsn=7650&snA=1026291",
+    "精靈遊俠": "https://forum.gamer.com.tw/C.php?bsn=7650&snA=919629",
+    "幻影俠盜": "https://forum.gamer.com.tw/C.php?bsn=7650&snA=891539",
+    "隱月": "https://forum.gamer.com.tw/C.php?bsn=7650&snA=1020845",
+    "爆拳槍神": "https://forum.gamer.com.tw/C.php?bsn=7650&snA=974038",
+    "煉獄巫師": "https://forum.gamer.com.tw/C.php?bsn=7650&snA=1021000",
+    "狂豹獵人": "https://forum.gamer.com.tw/C.php?bsn=7650&snA=894749",
+    "機甲戰神": "https://forum.gamer.com.tw/C.php?bsn=7650&snA=976654",
+    "惡魔殺手": "https://forum.gamer.com.tw/Co.php?bsn=7650&sn=6152106",
+    "惡魔復仇者": "https://forum.gamer.com.tw/C.php?bsn=7650&snA=1015079",
+    "傑諾": "https://forum.gamer.com.tw/C.php?bsn=7650&snA=959673",
+    "凱撒": "https://forum.gamer.com.tw/C.php?bsn=7650&snA=1015441",
+    "凱殷": "https://forum.gamer.com.tw/C.php?bsn=7650&snA=1024022",
+    "卡蒂娜": "https://forum.gamer.com.tw/C.php?bsn=7650&snA=1011427",
+    "天使破壞者": "https://forum.gamer.com.tw/C.php?bsn=7650&snA=1002369",
+    "阿戴爾": "https://forum.gamer.com.tw/C.php?bsn=7650&snA=1016892",
+    "伊利恩": "https://forum.gamer.com.tw/C.php?bsn=7650&snA=1027011",
+    "卡莉": "https://forum.gamer.com.tw/C.php?bsn=7650&snA=1025791",
+    "亞克": "https://forum.gamer.com.tw/C.php?bsn=7650&snA=992523",
+    "菈菈": "https://forum.gamer.com.tw/C.php?bsn=7650&snA=1019349",
+    "虎影": "https://forum.gamer.com.tw/C.php?bsn=7650&snA=1020893",
+    "凱內西斯": "https://forum.gamer.com.tw/C.php?bsn=7650&snA=1006030",
+    "神之子": "https://forum.gamer.com.tw/C.php?bsn=7650&snA=1014516",
+    "劍豪": "https://forum.gamer.com.tw/C.php?bsn=7650&snA=1015610",
+    "陰陽師": "https://forum.gamer.com.tw/C.php?bsn=7650&snA=895604",
+    "琳恩": "https://forum.gamer.com.tw/C.php?bsn=7650&snA=1028484",
+    "墨玄": "https://forum.gamer.com.tw/C.php?bsn=7650&snA=1012847"
+}
 
 level_mapping = {
     0: None, 
