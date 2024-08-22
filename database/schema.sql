@@ -34,3 +34,29 @@ CREATE TABLE IF NOT EXISTS `maple_map` (
   `name` varchar(20) NOT NULL,
   `streetName` varchar(20)
 );
+
+CREATE TABLE IF NOT EXISTS `maple_character` (
+  `discord_name` varchar(20) NOT NULL,
+  `ign` varchar(12) NOT NULL PRIMARY KEY,
+  `class_idx` int(11) NOT NULL,
+  `level` int(11) DEFAULT 0,
+  `attack` int(11) DEFAULT 0,
+  `attack_p` int(11) DEFAULT 0,
+  `dmg_p` int(11) DEFAULT 0,
+  `boss_p` int(11) DEFAULT 0,
+  `strike_p` real DEFAULT 0,
+  `ignore_p` real DEFAULT 0,
+  `finaldmg_p` int(11) DEFAULT 0,
+  `str_clear` int(11) DEFAULT 0,
+  `str_p` int(11) DEFAULT 0,
+  `str_unique` int(11) DEFAULT 0,
+  `dex_clear` int(11) DEFAULT 0,
+  `dex_p` int(11) DEFAULT 0,
+  `dex_unique` int(11) DEFAULT 0,
+  `int_clear` int(11) DEFAULT 0,
+  `int_p` int(11) DEFAULT 0,
+  `int_unique` int(11) DEFAULT 0,
+  `luk_clear` int(11) DEFAULT 0,
+  `luk_p` int(11) DEFAULT 0,
+  `luk_unique` int(11) DEFAULT 0
+);

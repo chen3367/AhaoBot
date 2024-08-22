@@ -3,13 +3,13 @@ import sqlite3
 def getMobList():
     conn = sqlite3.connect("database/database.db")
     result = conn.execute("SELECT DISTINCT(name) FROM maple_mob ORDER BY id")
-    mob_list = {mob[0]:mob[0] for mob in result.fetchall()}
+    mob_list = [mob[0] for mob in result.fetchall()]
     conn.close()
     return mob_list
 
-mob_list = getMobList()
+MOB_LIST = getMobList()
 
-tips = {
+TIPS = {
     "【攻略】製作書掉落資訊": "https://forum.gamer.com.tw/C.php?bsn=7650&snA=1013981",
     "【攻略】個人(打王)增益效果統整": "https://forum.gamer.com.tw/C.php?bsn=7650&snA=1024032",
     "【攻略】伊甸的糧食倉庫 經驗表": "https://forum.gamer.com.tw/C.php?bsn=7650&snA=1027857",
@@ -17,7 +17,7 @@ tips = {
     "【工具】BOSS篩選器": "https://forum.gamer.com.tw/C.php?bsn=7650&snA=1025763"
 }
 
-jobtips = {
+JOB_TIPS = {
     "英雄": "https://forum.gamer.com.tw/C.php?bsn=7650&snA=1029191",
     "聖騎士": "https://forum.gamer.com.tw/C.php?bsn=7650&snA=928713",
     "黑騎士": "https://forum.gamer.com.tw/C.php?bsn=7650&snA=999902",
@@ -70,7 +70,7 @@ jobtips = {
     "墨玄": "https://forum.gamer.com.tw/C.php?bsn=7650&snA=1012847"
 }
 
-level_mapping = {
+LEVEL_MAPPING = {
     0: None, 
     10: "[新手任務]",
     20: "[北部森林]綠樹的樹藤 風獨眼獸",
@@ -96,4 +96,47 @@ level_mapping = {
     275: "[飯店阿爾克斯]沒有目的地的橫貫列車1 嚴格的站務員 石奇異/AUT200",
     280: "[奧迪溫]被佔領的巷道2 安格洛機器人 B型/AUT260",
     300: "[奧迪溫]大門深鎖的實驗室 3 失敗的實驗體/AUT300"
+}
+
+
+CLASS_LIST = [
+    '英雄(單手武器)','英雄(雙手武器)','聖騎士(單手武器)','聖騎士(雙手武器)','黑騎士',
+    '大魔導士(火、毒)','大魔導士(冰、雷)','主教',
+    '箭神','神射手','開拓者',
+    '夜使者','暗影神偷','影武者',
+    '拳霸','槍神','重砲指揮官',
+    '聖魂劍士(單)','聖魂劍士(雙)','烈焰巫師','破風使者','暗夜行者','閃雷悍將','米哈逸',
+    '狂豹獵人','機甲戰神','煉獄巫師','爆拳槍神','惡魔殺手','傑諾',#'惡魔復仇者',
+    '龍魔導士','精靈遊俠','狂狼勇士','夜光','幻影俠盜','隱月',
+    '天使破壞者','凱撒','卡蒂娜','凱殷',
+    '伊利恩','亞克','阿戴爾','卡莉',
+    '神之子(琉)','神之子(璃)',
+    '凱內西斯',
+    '虎影','菈菈',
+    '琳恩',
+    '劍豪(一般狀態)','劍豪(拔刀狀態)','陰陽師',
+    '墨玄'
+]
+
+DATA_MAPPING = {
+    "等級": "level",
+    "基礎攻擊": "attack",
+    "攻擊力%": "attack_p",
+    "傷害%": "dmg_p",
+    "BOSS傷害%": "boss_p",
+    "爆擊傷害%": "strike_p",
+    "無視防禦%": "ignore_p",
+    "最終傷害%": "finaldmg_p",
+    "吃%STR": "str_clear",
+    "STR%": "str_p",
+    "不吃%STR": "str_unique",
+    "吃%DEX": "dex_clear",
+    "DEX%": "dex_p",
+    "不吃%DEX": "dex_unique",
+    "吃%INT": "int_clear",
+    "INT%": "int_p",
+    "不吃%INT": "int_unique",
+    "吃%LUK": "luk_clear",
+    "LUK%": "luk_p",
+    "不吃%LUK": "luk_unique",
 }
