@@ -392,7 +392,7 @@ class Maple(commands.Cog, name="maple"):
             embed = discord.Embed(
                 title="錯誤", description=e, color=0xE02B2B
             )
-            await context.send(embed=embed, ephemeral=True)
+            await context.send(embed=embed)
 
     @maple.command(name="calculate_equivalent", description="計算等效數值")
     @app_commands.describe(
@@ -473,7 +473,7 @@ class Maple(commands.Cog, name="maple"):
             embed = discord.Embed(
                 title="錯誤", description=e, color=0xE02B2B
             )
-        await context.send(embed=embed, ephemeral=True)
+        await context.send(embed=embed)
 
 async def setup(bot) -> None:
     await bot.add_cog(Maple(bot))
