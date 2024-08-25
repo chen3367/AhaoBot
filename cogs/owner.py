@@ -363,8 +363,7 @@ class Owner(commands.Cog, name="owner"):
 
     @commands.hybrid_group(
         name="warning",
-        description="Manage warnings of a user on a server.",
-        subcommand_description=True
+        description="Manage warnings of a user on a server."
     )
     @commands.is_owner()
     async def warning(self, context: Context) -> None:
