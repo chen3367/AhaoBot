@@ -64,7 +64,7 @@ class General(commands.Cog, name="general"):
         await interaction.response.send_message(embed=embed, ephemeral=True)
 
     @commands.hybrid_command(
-        name="help", description="List all commands the bot has loaded."
+        name="help", description="指令介紹"
     )
     async def help(self, context: Context) -> None:
         prefix = self.bot.config["prefix"]
@@ -80,6 +80,10 @@ class General(commands.Cog, name="general"):
             for command in commands:
                 description = command.description.partition("\n")[0]
                 data.append(f"{prefix if 'sync' in command.name else '/'}{command.name} - {description}")
+                if command.hidden:
+                    for k, v in command.all_commands.items():
+                        if not v.hidden:
+                            data.append(f"/{command.name} {k} - {v.description}")
             help_text = "\n".join(data)
             embed.add_field(
                 name=i.capitalize(), value=f"```{help_text}```", inline=False
@@ -88,7 +92,7 @@ class General(commands.Cog, name="general"):
 
     @commands.hybrid_command(
         name="serverinfo",
-        description="Get some useful (or not) information about the server.",
+        description="伺服器資訊",
     )
     async def serverinfo(self, context: Context) -> None:
         """
@@ -119,7 +123,7 @@ class General(commands.Cog, name="general"):
 
     @commands.hybrid_command(
         name="invite",
-        description="Get the invite link of the bot to be able to invite it.",
+        description="取得邀請連結",
     )
     async def invite(self, context: Context) -> None:
         """

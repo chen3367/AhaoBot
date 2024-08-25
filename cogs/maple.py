@@ -107,7 +107,8 @@ class Maple(commands.Cog, name="maple"):
 
     @commands.hybrid_group(
         name="maple",
-        description="Maplestory functions.",
+        description="楓之谷相關指令",
+        hidden=True
     )
     async def maple(self, context: Context) -> None:
         """
@@ -258,7 +259,7 @@ class Maple(commands.Cog, name="maple"):
             )
         await context.send(embed=embed, ephemeral=True)
 
-    @maple.command(name="character_quick_update", description="快速更新角色資訊")
+    @maple.command(name="character_quick_update", description="快速更新角色資訊", hidden = True)
     @commands.is_owner()
     @app_commands.describe(
         ign="遊戲ID",
