@@ -68,26 +68,40 @@ class General(commands.Cog, name="general"):
     )
     async def help(self, context: Context) -> None:
         prefix = self.bot.config["prefix"]
+        ephemeral_embed = discord.Embed(
+            title="Help", description="管理員指令清單", color=0xBEBEFE
+        )
         embed = discord.Embed(
-            title="Help", description="List of available commands:", color=0xBEBEFE
+            title="Help", description="指令清單", color=0xBEBEFE
         )
         for i in self.bot.cogs:
             if i == "owner" and not (await self.bot.is_owner(context.author)):
                 continue
             cog = self.bot.get_cog(i.lower())
             commands = cog.get_commands()
+            ephemeral_data = []
             data = []
             for command in commands:
                 description = command.description.partition("\n")[0]
-                data.append(f"{prefix if 'sync' in command.name else '/'}{command.name} - {description}")
+                if i == "owner":
+                    ephemeral_data.append(f"{prefix if 'sync' in command.name else '/'}{command.name} - {description}")
+                else:
+                    data.append(f"/{command.name} - {description}")
                 if command.hidden:
                     for k, v in command.all_commands.items():
                         if not v.hidden:
                             data.append(f"/{command.name} {k} - {v.description}")
+            ephemeral_help_text = "\n".join(ephemeral_data)
             help_text = "\n".join(data)
-            embed.add_field(
-                name=i.capitalize(), value=f"```{help_text}```", inline=False
-            )
+            if i == "owner":
+                ephemeral_embed.add_field(
+                    name=i.capitalize(), value=f"```{ephemeral_help_text}```", inline=False
+                )
+            else:
+                embed.add_field(
+                    name=i.capitalize(), value=f"```{help_text}```", inline=False
+                )
+        await context.send(embed=ephemeral_embed)
         await context.send(embed=embed)
 
     @commands.hybrid_command(
