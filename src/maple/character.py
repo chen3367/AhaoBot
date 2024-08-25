@@ -213,28 +213,28 @@ class Charactor():
 
         if('LEVEL' in data): me.data['LEVEL'] = data['LEVEL']
         if('ATTACK' in data): me.data['ATTACK'] = data['ATTACK']
-        if('ATTACK_P' in data): me.data['ATTACK_P'] = data['ATTACK_P']
-        if('DMG_P' in data): me.data['DMG_P'] = data['DMG_P']
-        if('BOSS_P' in data): me.data['BOSS_P'] = data['BOSS_P']
-        if('STRIKE_P' in data): me.data['STRIKE_P'] = data['STRIKE_P']
-        if('IGNORE_P' in data): me.data['IGNORE_P'] = data['IGNORE_P']
-        if('FINALDMG_P' in data): me.data['FINALDMG_P'] = data['FINALDMG_P']
-        if('DEFENSE_P' in data): me.data['DEFENSE_P'] = data['DEFENSE_P']
+        if('ATTACK_P' in data): me.data['ATTACK_P'] = data['ATTACK_P'] / 100
+        if('DMG_P' in data): me.data['DMG_P'] = data['DMG_P'] / 100
+        if('BOSS_P' in data): me.data['BOSS_P'] = data['BOSS_P'] / 100
+        if('STRIKE_P' in data): me.data['STRIKE_P'] = data['STRIKE_P'] / 100
+        if('IGNORE_P' in data): me.data['IGNORE_P'] = data['IGNORE_P'] / 100
+        if('FINALDMG_P' in data): me.data['FINALDMG_P'] = data['FINALDMG_P'] / 100
+        if('DEFENSE_P' in data): me.data['DEFENSE_P'] = data['DEFENSE_P'] / 100
 
         if('STR_CLEAR' in data): me.data['STR_CLEAR'] = data['STR_CLEAR']
-        if('STR_P' in data): me.data['STR_P'] = data['STR_P']
+        if('STR_P' in data): me.data['STR_P'] = data['STR_P'] / 100
         if('STR_UNIQUE' in data): me.data['STR_UNIQUE'] = data['STR_UNIQUE']
 
         if('DEX_CLEAR' in data): me.data['DEX_CLEAR'] = data['DEX_CLEAR']
-        if('DEX_P' in data): me.data['DEX_P'] = data['DEX_P']
+        if('DEX_P' in data): me.data['DEX_P'] = data['DEX_P'] / 100
         if('DEX_UNIQUE' in data): me.data['DEX_UNIQUE'] = data['DEX_UNIQUE']
 
         if('INT_CLEAR' in data): me.data['INT_CLEAR'] = data['INT_CLEAR']
-        if('INT_P' in data): me.data['INT_P'] = data['INT_P']
+        if('INT_P' in data): me.data['INT_P'] = data['INT_P'] / 100
         if('INT_UNIQUE' in data): me.data['INT_UNIQUE'] = data['INT_UNIQUE']
 
         if('LUK_CLEAR' in data): me.data['LUK_CLEAR'] = data['LUK_CLEAR']
-        if('LUK_P' in data): me.data['LUK_P'] = data['LUK_P']
+        if('LUK_P' in data): me.data['LUK_P'] = data['LUK_P'] / 100
         if('LUK_UNIQUE' in data): me.data['LUK_UNIQUE'] = data['LUK_UNIQUE']
         
         if('CLASS_IDX' in data): 
@@ -836,4 +836,9 @@ class Charactor():
         # AP差 / (4*淨主屬+副屬)
         STATE_INFO['ALL_P'] = AP_DIFF / ((4 * MAIN_AP_CLEAR) + MINOR_AP_CLEAR)
 
+        return STATE_INFO
+    
+    def cal_Equivalent(me, new_data):
+        IMPROVE_INFO = me.calcImprove(new_data)
+        STATE_INFO = me.getEquivalent(IMPROVE_INFO['TOTAL'])
         return STATE_INFO

@@ -206,8 +206,8 @@ class Maple(commands.Cog, name="maple"):
                     title="錯誤", description="最多登錄3筆\n查詢已登錄角色: `/maple character_list`\n刪除已登錄角色: `/maple character_delete`", color=0xE02B2B
                 )
             else:
-                c = Charactor()
-                class_info = c.getClassInfo(class_name)
+                myCharactor = Charactor()
+                class_info = myCharactor.getClassInfo(class_name)
                 await self.bot.database.insert("maple_character",
                     discord_name=context.message.author.name,
                     ign=ign,
@@ -225,11 +225,11 @@ class Maple(commands.Cog, name="maple"):
     @maple.command(name="character_update", description="更新角色資訊")
     @app_commands.describe(
         ign="遊戲ID",
-        data="更新項目",
+        item="更新項目",
         value="更新數值"
     )
-    @app_commands.autocomplete(data=autocompletion_dict(var.DATA_MAPPING))
-    async def character_update(self, context: Context, ign: str, data: str, value: float) -> None:
+    @app_commands.autocomplete(item=autocompletion_dict(var.DATA_MAPPING))
+    async def character_update(self, context: Context, ign: str, item: str, value: float) -> None:
         try:
             search_result = await self.bot.database.select_one("discord_name", "maple_character", ign=ign)
             if not search_result:
@@ -245,12 +245,12 @@ class Maple(commands.Cog, name="maple"):
                     title="錯誤", description="請輸入大於零的數字", color=0xE02B2B
                 )
             else:
-                await self.bot.database.update("maple_character", f"{data}={value}", ign=ign)
-                if data not in ("strike_p", "ignore_p"):
+                await self.bot.database.update("maple_character", f"{item}={value}", ign=ign)
+                if item not in ("STRIKE_P", "IGNORE_P"):
                     value = int(value)
-                reversed_data_mapping = {val:key for key, val in var.DATA_MAPPING.items()}
+                REVERSED_DATA_MAPPING = {val:key for key, val in var.DATA_MAPPING.items()}
                 embed = discord.Embed(
-                    title="更新成功", description=f"遊戲ID: {ign}\n更新項目: {reversed_data_mapping[data]}\n更新值: {value}", color=0xBEBEFE
+                    title="更新成功", description=f"遊戲ID: {ign}\n更新項目: {REVERSED_DATA_MAPPING[item]}\n更新值: {value}", color=0xBEBEFE
                 )
         except Exception as e:
             embed = discord.Embed(
@@ -363,8 +363,8 @@ class Maple(commands.Cog, name="maple"):
                     title="錯誤", description=f"遊戲ID:'{ign}' 尚未登錄", color=0xE02B2B
                 )
             else:
-                class_name = var.CLASS_LIST[search_result[2]]
-                embed = discord.Embed(title=f"{search_result[1]} ({class_name})", description="", color=0xBEBEFE)
+                CLASS_NAME = var.CLASS_LIST[search_result[2]]
+                embed = discord.Embed(title=f"{search_result[1]} ({CLASS_NAME})", description="", color=0xBEBEFE)
                 embed.add_field(name="登錄者", value=search_result[0])
                 embed.add_field(name="等級", value=search_result[3])
                 embed.add_field(name="基礎攻擊", value=search_result[4])
@@ -393,6 +393,87 @@ class Maple(commands.Cog, name="maple"):
                 title="錯誤", description=e, color=0xE02B2B
             )
             await context.send(embed=embed, ephemeral=True)
+
+    @maple.command(name="calculate_equivalent", description="計算等效數值")
+    @app_commands.describe(
+        ign="遊戲ID",
+        item="計算項目",
+        value="增加值",
+        defense_p="怪物防禦%"
+    )
+    @app_commands.autocomplete(item=autocompletion_dict({k:v for k, v in var.DATA_MAPPING.items() if v != "LEVEL"}))
+    async def calculate_equivalent(self, context: Context, ign: str, item: str, value: int, defense_p: int = 300) -> None:
+        try:
+            search_result = await self.bot.database.select_one("*", "maple_character", ign=ign)
+            if not search_result:
+                embed = discord.Embed(
+                    title="錯誤", description=f"遊戲ID:'{ign}' 尚未登錄", color=0xE02B2B
+                )
+            else:
+                myCharactor = Charactor()
+
+                # 更新職業相關參數
+                CLASS_NAME = var.CLASS_LIST[search_result[2]]
+                myCharactor.updateAbilityByData(myCharactor.getClassInfo(CLASS_NAME))
+
+                # 讀取DB資料，更新至myCharactor
+                data = {
+                    'LEVEL': search_result[3],
+                    'ATTACK': search_result[4],
+                    'ATTACK_P': search_result[5],
+                    'DMG_P': search_result[6],
+                    'BOSS_P': search_result[7],
+                    'STRIKE_P': search_result[8],
+                    'IGNORE_P': search_result[9],
+                    'FINALDMG_P': search_result[10],
+                    'DEFENSE_P': defense_p,
+                    'STR_CLEAR': search_result[11],
+                    'STR_P': search_result[12],
+                    'STR_UNIQUE': search_result[13],
+                    'DEX_CLEAR': search_result[14],
+                    'DEX_P': search_result[15],
+                    'DEX_UNIQUE': search_result[16],
+                    'INT_CLEAR': search_result[17],
+                    'INT_P': search_result[18],
+                    'INT_UNIQUE': search_result[19],
+                    'LUK_CLEAR': search_result[20],
+                    'LUK_P': search_result[21],
+                    'LUK_UNIQUE': search_result[22]
+                }
+                myCharactor.updateAbilityByData(data)
+
+                # 計算等效數值
+                new_data = {item:value*[1, 0.01][item.endswith("_P")]}
+                result = {k:round(v*[1, 100][k.endswith("_P")], 3) for k, v in myCharactor.cal_Equivalent(new_data).items()}
+
+
+                REVERSED_DATA_MAPPING = {val:key for key, val in var.DATA_MAPPING.items()}
+                embed = discord.Embed(title=f"{search_result[1]} ({CLASS_NAME})", description=f"{value}{REVERSED_DATA_MAPPING[item]}=", color=0xBEBEFE)
+                embed.add_field(name="基礎攻擊", value=result['ATTACK'])
+                embed.add_field(name="攻擊力%", value=result['ATTACK_P'])
+                embed.add_field(name="傷害%", value=result['DMG_P'])
+                embed.add_field(name="BOSS傷害%", value=result['BOSS_P'])
+                embed.add_field(name="爆擊傷害%", value=result['STRIKE_P'])
+                embed.add_field(name="無視防禦%", value=result['IGNORE_P'])
+                # embed.add_field(name="最終傷害%", value=result['FINALDMG_P'])
+                embed.add_field(name="吃%STR", value=result['STR_CLEAR'])
+                embed.add_field(name="STR%", value=result['STR_P'])
+                embed.add_field(name="不吃%STR", value=result['STR_UNIQUE'])
+                embed.add_field(name="吃%DEX", value=result['DEX_CLEAR'])
+                embed.add_field(name="DEX%", value=result['DEX_P'])
+                embed.add_field(name="不吃%DEX", value=result['DEX_UNIQUE'])
+                embed.add_field(name="吃%INT", value=result['INT_CLEAR'])
+                embed.add_field(name="INT%", value=result['INT_P'])
+                embed.add_field(name="不吃%INT", value=result['INT_UNIQUE'])
+                embed.add_field(name="吃%LUK", value=result['LUK_CLEAR'])
+                embed.add_field(name="LUK%", value=result['LUK_P'])
+                embed.add_field(name="不吃%LUK", value=result['LUK_UNIQUE'])
+                embed.set_thumbnail(url="https://maplestory.io/api/TWMS/256/npc/9000030/icon")
+        except Exception as e:
+            embed = discord.Embed(
+                title="錯誤", description=e, color=0xE02B2B
+            )
+        await context.send(embed=embed, ephemeral=True)
 
 async def setup(bot) -> None:
     await bot.add_cog(Maple(bot))
