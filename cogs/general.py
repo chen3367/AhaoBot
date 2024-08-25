@@ -101,7 +101,7 @@ class General(commands.Cog, name="general"):
                 embed.add_field(
                     name=i.capitalize(), value=f"```{help_text}```", inline=False
                 )
-        await context.send(embed=ephemeral_embed)
+        await context.send(embed=ephemeral_embed, ephemeral=True)
         await context.send(embed=embed)
 
     @commands.hybrid_command(
