@@ -188,7 +188,7 @@ class Maple(commands.Cog, name="maple"):
             embed.set_thumbnail(url=f"https://maplestory.io/api/TWMS/256/mob/{mob_id}/icon")
             await context.send(embed=embed, view=buttons)
 
-    @maple.command(name="character_register", description="登錄角色")
+    @maple.command(name="character_register", description="登錄角色(每個DC帳號最多登錄3隻)")
     @app_commands.describe(
         ign="遊戲ID",
         class_name="職業名稱"
