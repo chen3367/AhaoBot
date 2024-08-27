@@ -313,54 +313,6 @@ class Maple(commands.Cog, name="maple"):
             )
         await context.send(embed=embed, ephemeral=True)
 
-    @maple.command(name="character_quick_update", description="快速更新角色資訊", hidden = True)
-    @commands.is_owner()
-    @app_commands.describe(
-        ign="遊戲ID",
-        value="更新數值"
-    )
-    async def character_quick_update(self, context: Context, ign: str, value: str) -> None:
-        try:
-            search_result = await self.bot.database.select_one("discord_name", "maple_character", ign=ign)
-            if not search_result:
-                embed = discord.Embed(
-                    title="錯誤", description=f"遊戲ID:'{ign}' 尚未登錄", color=0xE02B2B
-                )
-            else:
-                abilities = value.split(",")
-                set_statement = ",".join([
-                    f"discord_name='{abilities[0]}'",
-                    f"level={abilities[1]}",
-                    f"attack={abilities[2]}",
-                    f"attack_p={abilities[3]}",
-                    f"dmg_p={abilities[4]}",
-                    f"boss_p={abilities[5]}",
-                    f"strike_p={abilities[6]}",
-                    f"ignore_p={abilities[7]}",
-                    f"finaldmg_p={abilities[8]}",
-                    f"str_clear={abilities[9]}",
-                    f"str_p={abilities[10]}",
-                    f"str_unique={abilities[11]}",
-                    f"dex_clear={abilities[12]}",
-                    f"dex_p={abilities[13]}",
-                    f"dex_unique={abilities[14]}",
-                    f"int_clear={abilities[15]}",
-                    f"int_p={abilities[16]}",
-                    f"int_unique={abilities[17]}",
-                    f"luk_clear={abilities[18]}",
-                    f"luk_p={abilities[19]}",
-                    f"luk_unique={abilities[20]}"
-                ])
-                await self.bot.database.update("maple_character", set_statement, ign=ign)
-                embed = discord.Embed(
-                    title="更新成功", description=f"discord_name={abilities[0]}\n遊戲ID: {ign}", color=0xBEBEFE
-                )
-        except Exception as e:
-            embed = discord.Embed(
-                title="錯誤", description=e, color=0xE02B2B
-            )
-        await context.send(embed=embed, ephemeral=True)
-
     @maple.command(name="character_delete", description="刪除角色")
     @app_commands.describe(
         ign="遊戲ID",
