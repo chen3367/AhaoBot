@@ -223,14 +223,68 @@ class Maple(commands.Cog, name="maple"):
             )
         await context.send(embed=embed, ephemeral=True)
 
-    @maple.command(name="character_update", description="更新角色資訊")
+    @maple.command(name="character_update", description="更新能力值")
+    @app_commands.describe(
+        ign="遊戲ID",
+        level="等級",
+        attack="基礎攻擊",
+        attack_p="攻擊力%",
+        dmg_p="傷害%",
+        boss_p="BOSS傷害%",
+        strike_p="爆擊傷害%%",
+        ignore_p="無視防禦%",
+        finaldmg_p="最終傷害%",
+        str_clear="吃%STR",
+        str_p="STR%",
+        str_unique="不吃%STR",
+        dex_clear="吃%DEX",
+        dex_p="DEX%",
+        dex_unique="不吃%DEX",
+        int_clear="吃%INT",
+        int_p="INT%",
+        int_unique="不吃%INT",
+        luk_clear="吃%LUK",
+        luk_p="LUK%",
+        luk_unique="不吃%LUK",
+    )
+    async def character_update(self, context: Context, ign: str, level: int, attack: int, attack_p: int, dmg_p: int, boss_p: int, strike_p: float,
+                               ignore_p: float, finaldmg_p: int, str_clear: int, str_p: int, str_unique: int, dex_clear: int, dex_p: int, 
+                               dex_unique: int, int_clear: int, int_p: int, int_unique: int, luk_clear: int, luk_p: int, luk_unique: int) -> None:
+        try:
+            args = {k:v for k, v in locals().items() if k not in ("self", "context", "ign")}
+            search_result = await self.bot.database.select_one("discord_name", "maple_character", ign=ign)
+            if not search_result:
+                embed = discord.Embed(
+                    title="錯誤", description=f"遊戲ID:'{ign}' 尚未登錄", color=0xE02B2B
+                )
+            elif search_result[0] != context.message.author.name and context.message.author.id != self.bot.owner_id:
+                embed = discord.Embed(
+                    title="錯誤", description=f"遊戲ID:'{ign}' 僅能由登錄者{search_result[0]}修改", color=0xE02B2B
+                )
+            elif any(arg < 0 for arg in args.values()):
+                embed = discord.Embed(
+                    title="錯誤", description="請輸入大於零的數字", color=0xE02B2B
+                )
+            else:
+                set_statement = ",".join(f"{k}={v}" for k, v in args.items())
+                await self.bot.database.update("maple_character", set_statement, ign=ign)
+                embed = discord.Embed(
+                    title="更新成功", description=f"遊戲ID:{ign}", color=0xBEBEFE
+                )
+        except Exception as e:
+            embed = discord.Embed(
+                title="錯誤", description=e, color=0xE02B2B
+            )
+        await context.send(embed=embed, ephemeral=True)
+
+    @maple.command(name="character_update_one", description="更新單項能力值")
     @app_commands.describe(
         ign="遊戲ID",
         item="更新項目",
         value="更新數值"
     )
     @app_commands.autocomplete(item=autocompletion_dict(var.DATA_MAPPING))
-    async def character_update(self, context: Context, ign: str, item: str, value: float) -> None:
+    async def character_update_one(self, context: Context, ign: str, item: str, value: float) -> None:
         try:
             search_result = await self.bot.database.select_one("discord_name", "maple_character", ign=ign)
             if not search_result:
