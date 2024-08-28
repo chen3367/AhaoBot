@@ -139,4 +139,5 @@ DATA_MAPPING = {
     "吃%LUK": "LUK_CLEAR",
     "LUK%": "LUK_P",
     "不吃%LUK": "LUK_UNIQUE",
+    "全屬性%": "ALL_P",
 }

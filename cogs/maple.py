@@ -283,7 +283,7 @@ class Maple(commands.Cog, name="maple"):
         item="更新項目",
         value="更新數值"
     )
-    @app_commands.autocomplete(item=autocompletion_dict(var.DATA_MAPPING))
+    @app_commands.autocomplete(item=autocompletion_dict({k:v for k, v in var.DATA_MAPPING.items() if v != "ALL_P"}))
     async def character_update_one(self, context: Context, ign: str, item: str, value: float) -> None:
         try:
             search_result = await self.bot.database.select_one("discord_name", "maple_character", ign=ign)
@@ -475,6 +475,7 @@ class Maple(commands.Cog, name="maple"):
                 embed.add_field(name="吃%LUK", value=result['LUK_CLEAR'])
                 embed.add_field(name="LUK%", value=result['LUK_P'])
                 embed.add_field(name="不吃%LUK", value=result['LUK_UNIQUE'])
+                embed.add_field(name="全屬性%", value=result['ALL_P'])
                 embed.set_thumbnail(url="https://maplestory.io/api/TWMS/256/npc/9000030/icon")
         except Exception as e:
             embed = discord.Embed(
