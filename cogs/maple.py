@@ -1,5 +1,6 @@
 import discord
 import typing
+import aiohttp, aiofiles
 from discord import app_commands
 from discord.ext import commands
 from discord.ext.commands import Context
@@ -393,8 +394,9 @@ class Maple(commands.Cog, name="maple"):
                 embed.add_field(name="吃%LUK", value=search_result[20])
                 embed.add_field(name="LUK%", value=search_result[21])
                 embed.add_field(name="不吃LUK", value=search_result[22])
-                embed.set_thumbnail(url="https://maplestory.io/api/TWMS/256/npc/9000030/icon")
-            await context.send(embed=embed)
+                image = discord.File("image/thumbnail.png", filename="thumbnail.png")
+                embed.set_thumbnail(url="attachment://thumbnail.png")
+            await context.send(file=image, embed=embed)
         except Exception as e:
             embed = discord.Embed(
                 title="錯誤", description=e, color=0xE02B2B
@@ -476,12 +478,44 @@ class Maple(commands.Cog, name="maple"):
                 embed.add_field(name="LUK%", value=result['LUK_P'])
                 embed.add_field(name="不吃%LUK", value=result['LUK_UNIQUE'])
                 embed.add_field(name="全屬性%", value=result['ALL_P'])
-                embed.set_thumbnail(url="https://maplestory.io/api/TWMS/256/npc/9000030/icon")
+                image = discord.File("image/thumbnail.png", filename="thumbnail.png")
+                embed.set_thumbnail(url="attachment://thumbnail.png")
         except Exception as e:
             embed = discord.Embed(
                 title="錯誤", description=e, color=0xE02B2B
             )
-        await context.send(embed=embed)
+        await context.send(file=image, embed=embed)
+
+    @maple.command(name="change_thumbnail_by_attachment", hidden=True)
+    @commands.is_owner()
+    async def change_thumbnail_by_attachment(self, context: Context, image: discord.Attachment) -> None:
+        try:
+            await image.save("image/thumbnail.png")
+            embed = discord.Embed(
+                title="成功", description="", color=0xBEBEFE
+            )
+        except Exception as e:
+            embed = discord.Embed(
+                title="錯誤", description=e, color=0xE02B2B
+            )            
+        await context.send(embed=embed, ephemeral=True)
+
+    @maple.command(name="change_thumbnail_by_url", hidden=True)
+    @commands.is_owner()
+    async def change_thumbnail_by_url(self, context: Context, url: str) -> None:
+        try:
+            async with aiohttp.ClientSession() as session:
+                async with session.get(url) as resp:
+                    async with aiofiles.open("image/thumbnail.png", 'wb') as f:
+                        await f.write(await resp.read())
+            embed = discord.Embed(
+                title="成功", description="", color=0xBEBEFE
+            )
+        except Exception as e:
+            embed = discord.Embed(
+                title="錯誤", description=e, color=0xE02B2B
+            )            
+        await context.send(embed=embed, ephemeral=True)
 
 async def setup(bot) -> None:
     await bot.add_cog(Maple(bot))
