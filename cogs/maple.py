@@ -403,6 +403,26 @@ class Maple(commands.Cog, name="maple"):
             )
             await context.send(embed=embed)
 
+    @maple.command(name="calculate_ignore", description="計算無視")
+    @app_commands.describe(
+        ignore_original="原始無視%",
+        ignore_extra="額外無視%",
+    )
+    async def calculate_ignore(self, context: Context, ignore_original: float, ignore_extra: float) -> None:
+        try:
+            if not (0 <= ignore_original <= 100 and 0 <= ignore_extra <= 100):
+                embed = discord.Embed(
+                    title="錯誤", description=f"輸入資料有誤", color=0xE02B2B
+                )
+            else:
+                ignore_result = 1 - (1 - 0.01 * ignore_original) * (1 - 0.01 * ignore_extra)
+                embed = discord.Embed(title="無視防禦", description=f"{ignore_original}% + {ignore_extra}% = {round(ignore_result*100, 2)}%", color=0xBEBEFE)
+        except Exception as e:
+            embed = discord.Embed(
+                title="錯誤", description=e, color=0xE02B2B
+            )
+        await context.send(embed=embed, ephemeral=True)
+
     @maple.command(name="calculate_equivalent", description="計算等效數值")
     @app_commands.describe(
         ign="遊戲ID",
