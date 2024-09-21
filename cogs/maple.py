@@ -431,7 +431,7 @@ class Maple(commands.Cog, name="maple"):
         defense_p="怪物防禦%"
     )
     @app_commands.autocomplete(item=autocompletion_dict({k:v for k, v in var.DATA_MAPPING.items() if v != "LEVEL"}))
-    async def calculate_equivalent(self, context: Context, ign: str, item: str, value: int, defense_p: int = 300) -> None:
+    async def calculate_equivalent(self, context: Context, ign: str, item: str, value: float, defense_p: int = 300) -> None:
         try:
             search_result = await self.bot.database.select_one("*", "maple_character", ign=ign)
             if not search_result:
