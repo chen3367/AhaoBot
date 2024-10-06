@@ -477,7 +477,7 @@ class Maple(commands.Cog, name="maple"):
 
 
                 REVERSED_DATA_MAPPING = {val:key for key, val in var.DATA_MAPPING.items()}
-                embed = discord.Embed(title=f"{search_result[1]} ({CLASS_NAME})", description=f"{value}{REVERSED_DATA_MAPPING[item]}=", color=0xBEBEFE)
+                embed = discord.Embed(title=f"{search_result[1]} ({CLASS_NAME})", description=f"{int(value) if value.is_integer() else value}{REVERSED_DATA_MAPPING[item]}=", color=0xBEBEFE)
                 embed.add_field(name="基礎攻擊", value=result['ATTACK'])
                 embed.add_field(name="攻擊力%", value=result['ATTACK_P'])
                 embed.add_field(name="傷害%", value=result['DMG_P'])
