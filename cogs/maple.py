@@ -9,21 +9,19 @@ from src.maple.character import Charactor
 
 class Mob(discord.ui.View):
     def __init__(self, mob, bot, index = 0) -> None:
-        super().__init__()
+        super().__init__(timeout=None)
         self.mob = mob
         self.bot = bot
         self.index = index
 
-    @discord.ui.button(label="<", style=discord.ButtonStyle.blurple)
+    @discord.ui.button(label="<", style=discord.ButtonStyle.blurple, disabled=True)
     async def previous(self, interaction: discord.Interaction, button: discord.ui.Button) -> None:
-        if self.index > 0:
-            self.index -= 1
+        self.index -= 1
         await self.callback(interaction)
 
     @discord.ui.button(label=">", style=discord.ButtonStyle.blurple)
     async def next(self, interaction: discord.Interaction, button: discord.ui.Button) -> None:
-        if self.index + 1 < len(self.mob):
-            self.index += 1
+        self.index += 1
         await self.callback(interaction)
 
     async def callback(self, interaction: discord.Interaction):
@@ -34,6 +32,13 @@ class Mob(discord.ui.View):
         )
         embed.add_field(name="", value=formatted_mob_info(self.mob[self.index], maps), inline=False)
         embed.set_thumbnail(url=f"https://maplestory.io/api/TWMS/256/mob/{mob_id}/icon")
+
+        for item in self.children:
+            if item.label == "<":
+                item.disabled = not self.index
+            else:
+                item.disabled = self.index == (len(self.mob) - 1)
+
         await interaction.response.edit_message(embed=embed, view=self, content=None)
 
 def autocompletion_dict(items: dict):
